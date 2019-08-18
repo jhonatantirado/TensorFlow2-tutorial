@@ -11,13 +11,13 @@ Remember to set the TF_CONFIG envrionment variable.
 
 For example:
 
-export TF_CONFIG='{"cluster": {"worker": ["10.1.10.58:12345", "10.1.10.250:12345"]}, "task": {"index": 0, "type": "worker"}}'
+export TF_CONFIG='{"cluster": {"worker": ["192.168.0.20:12345", "192.168.0.30:12345"]}, "task": {"index": 0, "type": "worker"}}'
 """
 
 strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
 
 
-NUM_GPUS = 2
+NUM_GPUS = 1
 BS_PER_GPU = 128
 NUM_EPOCHS = 60
 
@@ -41,7 +41,7 @@ def augmentation(x, y):
         x, HEIGHT + 8, WIDTH + 8)
     x = tf.image.random_crop(x, [HEIGHT, WIDTH, NUM_CHANNELS])
     x = tf.image.random_flip_left_right(x)
-    return x, y	
+    return x, y
 
 
 def schedule(epoch):
@@ -76,6 +76,6 @@ with strategy.scope():
   model.compile(
             optimizer=opt,
             loss='sparse_categorical_crossentropy',
-            metrics=['sparse_categorical_accuracy']) 
+            metrics=['sparse_categorical_accuracy'])
 model.fit(train_dataset,
           epochs=NUM_EPOCHS)
